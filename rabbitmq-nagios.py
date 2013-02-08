@@ -3,7 +3,7 @@
 from optparse import OptionParser  
 import urllib2  
 import json  
-import pprint  
+from pprint import pprint
 import time  
 import datetime  
   
@@ -23,6 +23,26 @@ def getOptions():
     arguments.add_option("--critical-seconds", dest="crit_seconds", help="Last event processes in seconds ago to alert as critical", type="int", default=14400)  
           
     return arguments.parse_args()[0]  
+
+def doApiGet(a, u, p):
+    # handle HTTP Auth
+    password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()
+    top_level_url = a
+    password_mgr.add_password(None, top_level_url, u, p)
+    handler = urllib2.HTTPBasicAuthHandler(password_mgr)
+    opener = urllib2.build_opener(handler)
+
+    response = None
+    try:
+        request = opener.open(url)
+        response = request.read()
+        request.close()
+    except urllib2.HTTPError, e:
+        print "Error code %s hitting %s" % (e.code, url)
+        return False
+
+    return response
+
   
 if __name__ == '__main__':  
       
@@ -30,26 +50,11 @@ if __name__ == '__main__':
       
     url = "http://%s:%s/api/queues/%s/%s" % (options.host, options.port, options.vhost, options.queue)  
       
-    # handle HTTP Auth  
-    password_mgr = urllib2.HTTPPasswordMgrWithDefaultRealm()  
-    top_level_url = url  
-    password_mgr.add_password(None, top_level_url, options.username, options.password)  
-    handler = urllib2.HTTPBasicAuthHandler(password_mgr)  
-    opener = urllib2.build_opener(handler)      
-      
-    response = None  
-    try:  
-        request = opener.open(url)  
-        response = request.read()  
-        request.close()  
-    except urllib2.HTTPError, e:  
-        print "Error code %s hitting %s" % (e.code, url)  
-        exit(1)  
+    content = doApiGet(url, options.username, options.password)
           
-    data = json.loads(response)  
+    data = json.loads(content)  
       
-    #pp = pprint.PrettyPrinter(indent=4)  
-    #pp.pprint(data)  
+    pprint(data)  
       
     num_messages = data.get("messages")  
     if num_messages > options.crit_queue or num_messages > options.warn_queue:  
