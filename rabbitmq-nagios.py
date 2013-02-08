@@ -54,20 +54,16 @@ if __name__ == '__main__':
           
     data = json.loads(content)  
       
-    pprint(data)  
+    #pprint(data)  
       
-    num_messages = data.get("messages")  
+    num_messages = data["messages"]
     if num_messages > options.crit_queue or num_messages > options.warn_queue:  
         print "%s messages in %s queue" % (num_messages, options.queue)  
         exit(1 if num_messages > options.crit_queue else 2)   
       
-    message_stats = data.get("message_stats")  
-    deliver_details = message_stats.get("deliver_details")  
-    rate = deliver_details.get("rate")  
+    rate = data["messages_details"]["rate"]
       
-    #1309542487   
-    #1309548601517      
-    last_event = deliver_details.get("last_event") / 1000  
+    last_event = data["messages_details"]["last_event"] / 1000  
     last_event_time = time.ctime(last_event)  
       
     #diff = abs(last_event_time - datetime.datetime.today())  
