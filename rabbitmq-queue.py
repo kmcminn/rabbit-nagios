@@ -9,7 +9,6 @@ import time
 import datetime
 
 
-
 class RabbitQueueCheck(Plugin):
     """
     performs a nagios compliant check on a single queue and
@@ -21,7 +20,6 @@ class RabbitQueueCheck(Plugin):
     port = make_option("--port", dest="port", help="RabbitMQ API port", type="string", default="15672")
     vhost = make_option("--vhost", dest="vhost", help="RabbitMQ vhost", type="string", default='%2F')
     queue = make_option("--queue", dest="queue", help="Name of the queue in inspect", type="string", default="queue")
-
 
     def doApiGet(self):
         """
@@ -42,9 +40,7 @@ class RabbitQueueCheck(Plugin):
             self.rabbit_error = 2
             self.rabbit_note = "problem with api get:", e
 
-
         return response
-
 
     def makeQueueUrl(self):
         """
@@ -52,13 +48,12 @@ class RabbitQueueCheck(Plugin):
         """
         try:
             self.url = "http://%s:%s/api/queues/%s/%s" % (self.options.hostname,
-                self.options.port, self.options.vhost, self.options.queue)
+                       self.options.port, self.options.vhost, self.options.queue)
             return True
         except Exception, e:
             self.rabbit_error = 3
             self.rabbit_note = "problem forming api url:", e
             return False
-
 
     def testOptions(self):
         """
@@ -66,12 +61,11 @@ class RabbitQueueCheck(Plugin):
         """
 
         if not self.options.hostname or not self.options.port \
-            or not self.options.vhost or not self.options.queue:
+                or not self.options.vhost or not self.options.queue:
 
             return False
 
         return True
-
 
     def quickExit(self, v):
         """
@@ -93,12 +87,10 @@ class RabbitQueueCheck(Plugin):
 
         return result
 
-
     def check(self):
         """
         returns a response and perf data for this check
         """
-
 
         self.rabbit_error = 0
         self.rabbit_note = "action performed successfully"
@@ -126,7 +118,7 @@ class RabbitQueueCheck(Plugin):
 
         queue = self.options.queue
 
-        result = self.response_for_value(self.rabbit_error) 
+        result = self.response_for_value(self.rabbit_error)
         result.set_perf_data(queue + "_messagess", data['messages'])
         result.set_perf_data(queue + "_rate", data['messages_details']['rate'])
         result.set_perf_data(queue + "_consumers", data['consumers'])
