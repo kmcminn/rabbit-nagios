@@ -87,6 +87,19 @@ class RabbitQueueCheck(Plugin):
 
         return result
 
+    def parseJson(self):
+        """
+        parse test and return api json
+        """
+        try:
+            data = json.loads(response)
+        except Exception, e:
+            data = None
+            self.rabbit_error = 4
+            self.rabbit_note = "problem with json parse:", e
+
+        return data
+
     def check(self):
         """
         returns a response and perf data for this check
@@ -106,12 +119,7 @@ class RabbitQueueCheck(Plugin):
         if self.rabbit_error > 0:
             return self.quickExit(255)
 
-        try:
-            data = json.loads(response)
-        except Exception, e:
-            data = None
-            self.rabbit_error = 4
-            self.rabbit_note = "problem with json parse:", e
+        data = self.parseJson(response)
 
         if self.rabbit_error > 0:
             return self.quickExit(255)
