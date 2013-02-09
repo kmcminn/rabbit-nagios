@@ -10,7 +10,7 @@ import datetime
 
 
 
-class RabbitCheck(Plugin):
+class RabbitQueueCheck(Plugin):
     """
     performs a nagios compliant check on a single queue and
     attempts to catch all errors. expected usage is with a critical threshold of 0
@@ -138,5 +138,5 @@ class RabbitCheck(Plugin):
 
 if __name__ == "__main__":
 
-    obj = RabbitCheck()
+    obj = RabbitQueueCheck()
     obj.check().exit()
