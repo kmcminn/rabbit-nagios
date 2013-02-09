@@ -79,7 +79,7 @@ class RabbitQueueCheck(Plugin):
         else:
             queue = self.options.queue
 
-        result.set_perf_data(queue + "_messagess", 0)
+        result.set_perf_data(queue + "_messages", 0)
         result.set_perf_data(queue + "_rate", 0)
         result.set_perf_data(queue + "_consumers", 0)
         result.set_perf_data("rabbit_error", self.rabbit_error)
@@ -127,7 +127,7 @@ class RabbitQueueCheck(Plugin):
         queue = self.options.queue
 
         result = self.response_for_value(self.rabbit_error)
-        result.set_perf_data(queue + "_messagess", data['messages'])
+        result.set_perf_data(queue + "_messages", data['messages'])
         result.set_perf_data(queue + "_rate", data['messages_details']['rate'])
         result.set_perf_data(queue + "_consumers", data['consumers'])
         result.set_perf_data("rabbit_error", self.rabbit_error)
