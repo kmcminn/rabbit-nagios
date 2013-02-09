@@ -87,7 +87,7 @@ class RabbitQueueCheck(Plugin):
 
         return result
 
-    def parseJson(self):
+    def parseJson(self, response):
         """
         parse test and return api json
         """
