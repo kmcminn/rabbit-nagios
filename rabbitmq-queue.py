@@ -21,6 +21,7 @@ class RabbitQueueCheck(Plugin):
     vhost = make_option("--vhost", dest="vhost", help="RabbitMQ vhost", type="string", default='%2F')
     queue = make_option("--queue", dest="queue", help="Name of the queue in inspect", type="string", default="queue")
 
+
     def doApiGet(self):
         """
         performs and returns content from an api get
@@ -36,9 +37,10 @@ class RabbitQueueCheck(Plugin):
             response = request.read()
             request.close()
         except Exception, e:
+            print response
             response = False
             self.rabbit_error = 2
-            self.rabbit_note = "problem with api get:", e
+            self.rabbit_note = "problem with api get:" + str(e)
 
         return response
 
@@ -59,7 +61,6 @@ class RabbitQueueCheck(Plugin):
         """
         returns false if necessary options aren't present
         """
-
         if not self.options.hostname or not self.options.port \
                 or not self.options.vhost or not self.options.queue:
 
@@ -70,9 +71,9 @@ class RabbitQueueCheck(Plugin):
     def quickExit(self, v):
         """
         zero out the perf data and return
-        """
 
-        result = self.response_for_value(v, m)
+        """
+        result = self.response_for_value(self.rabbit_error)
 
         if not self.options.queue:
             queue = 'queue'
@@ -116,6 +117,7 @@ class RabbitQueueCheck(Plugin):
 
         response = self.doApiGet()
 
+        print self.rabbit_error
         if self.rabbit_error > 0:
             return self.quickExit(255)
 
