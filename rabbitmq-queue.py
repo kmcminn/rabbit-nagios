@@ -37,7 +37,6 @@ class RabbitQueueCheck(Plugin):
             response = request.read()
             request.close()
         except Exception, e:
-            print response
             response = False
             self.rabbit_error = 2
             self.rabbit_note = "problem with api get:" + str(e)
@@ -117,7 +116,6 @@ class RabbitQueueCheck(Plugin):
 
         response = self.doApiGet()
 
-        print self.rabbit_error
         if self.rabbit_error > 0:
             return self.quickExit(255)
 
